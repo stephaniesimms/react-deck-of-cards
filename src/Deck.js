@@ -1,78 +1,81 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import uuid from 'uuid/v4';
-import Card from './Card';
+import React, { Component } from "react";
+import axios from "axios";
+import Card from "./Card";
+import "./Deck.css";
 
 const BASE_API_URL = "https://deckofcardsapi.com/api/deck";
 
-export default class Deck extends Component {
+class Deck extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deckId: '',
+      deck: null,
       cards: []
     };
-    this.handleClick = this.handleClick.bind(this);
+    this.getCard = this.getCard.bind(this);
     this.restart = this.restart.bind(this)
   };
 
   async componentDidMount() {
     let response = await axios.get(
-      `${BASE_API_URL}/new/shuffle/?deck_count=1`
+      `${BASE_API_URL}/new/shuffle/`
     );
-    this.setState({ deckId: response.data.deck_id });
+    this.setState({
+      deck: response.data
+    });
   }
-  
-  //handle click and request a new card from API
-  async handleClick(evt) {
-    evt.preventDefault();
 
-    if (this.state.cards.length <= 5) {
-      let response = await axios.get(
-        `${BASE_API_URL}/${this.state.deckId}/draw/?count=1`
-      );
+  //Handle click to draw a new card from API. Add card to state "cards" list.
 
-      let newCard = { id: uuid(), image: response.data.cards[0].image };
-      let cards = [...this.state.cards, newCard];
-      this.setState({ cards: cards });
+  async getCard() {
+    let deck_id = this.state.deck.deck_id;
+
+    try {
+      let drawResponse = await axios.get(`${BASE_API_URL}/${deck_id}/draw/`);
+
+      if (drawResponse.data.remaining === 0) {
+        throw new Error("no cards left to draw!");
+      }
+
+      let card = drawResponse.data.cards[0];
+
+      this.setState(st => ({
+        cards: [...st.cards,
+        {
+          id: card.code,
+          name: `${card.suit} ${card.value}`,
+          image: card.image,
+        }]
+      }));
+    } catch (err) {
+      alert(err);
     }
   }
+
+  // Reset state of cards list to empty and begin a new deck
 
   restart() {
     this.setState({ cards: [] });
   }
 
-  renderCards() {
-    if (this.state.cards.length < 52) {
-
-      return (
-        <div>
-          {this.state.cards.map(c => (
-            < Card
-              imgUrl={c.image}
-              id={c.id}
-              key={c.id} />
-          ))}
-        </div>
-      )
-    }
-
-    else {
-      return (
-        <div>
-          <p> No more cards</p>
-          <button onClick={this.restart()}></button>
-        </div>
-      );
-    }
-  }
-
   render() {
+    let drawnCards = this.state.cards.map(
+      c => <Card key={c.id}
+        name={c.name}
+        image={c.image} />);
+
     return (
-      <div>
-        <button onClick={this.handleClick}>Gimme Card</button>
-        {this.renderCards()}
+      <div className="Deck">
+        <button className="Deck-button"
+          onClick={this.getCard}>
+          GIMME A CARD!
+        </button>
+        <div className="Deck-drawncards">
+          {drawnCards}
+        </div>
       </div>
     );
   }
 }
+
+export default Deck;

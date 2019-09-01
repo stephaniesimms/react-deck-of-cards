@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import './Card.css';
-import { directive } from '@babel/types';
+import React, { Component } from "react";
+import "./Card.css";
 
 class Card extends Component {
   constructor(props) {
@@ -14,12 +13,12 @@ class Card extends Component {
   }
 
   render() {
-    const { imgUrl, name } = this.props;
+    const { image, name } = this.props;
 
     return (
       <img className="Card"
         alt={name}
-        src={`${imgUrl}`}
+        src={image}
         style={{ transform: this._transform }} />
     );
   }
