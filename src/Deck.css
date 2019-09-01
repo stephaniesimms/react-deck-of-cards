@@ -4,16 +4,17 @@
 
 .Deck-button {
   padding: 15px;
-  background-color: black;
-  color: white;
+  background-color: lightgoldenrodyellow;
+  color: black;
+  font-size: 1em;
   border-radius: 8px;
   border: none;
-  margin: 0 auto;
+  margin-top: 20px;
 }
   
 .Deck-button:hover {
   cursor: pointer;
-  background-color: #444;
+  background-color: lightgray ;
 } 
   
 .Deck-button:active, .Deck-button:focus {
@@ -21,5 +22,5 @@
 }
 
 .Deck-drawncards {
-  margin-top: 80px;
+  margin-top: 90px;
 }

@@ -35,6 +35,7 @@ class Deck extends Component {
 
       if (drawResponse.data.remaining === 0) {
         throw new Error("no cards left to draw!");
+      
       }
 
       let card = drawResponse.data.cards[0];
