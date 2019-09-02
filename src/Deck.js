@@ -13,10 +13,15 @@ class Deck extends Component {
       cards: []
     };
     this.getCard = this.getCard.bind(this);
+    this.loadGame = this.loadGame.bind(this);
     this.restart = this.restart.bind(this)
   };
 
   async componentDidMount() {
+    this.loadGame();
+  }
+
+  async loadGame() {
     let response = await axios.get(
       `${BASE_API_URL}/new/shuffle/`
     );
@@ -24,7 +29,6 @@ class Deck extends Component {
       deck: response.data
     });
   }
-
   //Handle click to draw a new card from API. Add card to state "cards" list.
 
   async getCard() {
@@ -35,7 +39,7 @@ class Deck extends Component {
 
       if (drawResponse.data.remaining === 0) {
         throw new Error("no cards left to draw!");
-      
+
       }
 
       let card = drawResponse.data.cards[0];
@@ -56,12 +60,16 @@ class Deck extends Component {
   // Reset state of cards list to empty and begin a new deck
 
   restart() {
-    this.setState({ cards: [] });
+    this.setState({ 
+      deck: null, 
+      cards: [] 
+    });
+    this.loadGame();
   }
 
   render() {
     let drawnCards = this.state.cards.map(
-      c => <Card 
+      c => <Card
         key={c.id}
         name={c.name}
         image={c.image} />);
@@ -71,6 +79,10 @@ class Deck extends Component {
         <button className="Deck-button"
           onClick={this.getCard}>
           GIMME A CARD!
+        </button>
+        <button className="Deck-button"
+          onClick={this.restart}>
+          RESTART
         </button>
         <div className="Deck-drawncards">
           {drawnCards}
