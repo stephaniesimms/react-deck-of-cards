@@ -3,9 +3,9 @@ https://react-deck-of-cards.netlify.com/
 
 ## Installation
 
-Download source code from this repository
-Install required npm libraries: `npm install`
-Start WebPack: `npm start`
+Download source code from this repository    
+Install required npm libraries: `npm install`    
+Start WebPack: `npm start`    
 
 ## Testing
 
